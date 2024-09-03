@@ -1,0 +1,32 @@
+# generate_password_hash 函数思维导图
+
+- **generate_password_hash**
+  - **参数**
+    - `password`: 要哈希的密码
+    - `method`: 哈希方法 (默认为 'pbkdf2:sha256')
+    - `salt_length`: salt的长度 (默认为 8)
+  - **功能**
+    - 生成哈希密码
+    - 根据方法选择是否使用salt
+    - 返回格式为 `method$salt$hash`
+  - **调用**
+    - `_hash_internal` 函数
+
+- **_hash_internal 函数**
+  - **参数**
+    - `method`: 哈希方法
+    - `salt`: 盐
+    - `password`: 要哈希的密码
+  - **功能**
+    - 支持明文、无盐和有盐的密码
+    - 使用 hmac 进行有盐的哈希
+    - 使用 PBKDF2 进行哈希 (如果选择的方法是 PBKDF2)
+  - **逻辑**
+    - 如果方法是 `plain`，直接返回密码
+    - 如果方法以 `pbkdf2:` 开头，解析方法和迭代次数
+    - 根据选择的方法获取哈希函数
+    - 如果是 PBKDF2，使用 `pbkdf2_hex` 进行哈希
+    - 如果使用盐，使用 `hmac.HMAC` 进行哈希
+    - 否则，直接使用哈希函数进行哈希
+  - **返回**
+    - 哈希值和实际使用的方法
